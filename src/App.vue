@@ -23,16 +23,14 @@ export default {
   components: {},
   data() {
     return {
-      data1: '2023-06-25'
+      date1: '2023-06-25'
     }
   },
   methods: {
     getStatu(date) {
       let arr = ['治', '白', '夜', '休', '休']
-      return arr[this.DateDiff(date) % 5]
-    },
-    DateDiff(date2) {
-      return (date2.getTime() - new Date(this.date1).getTime()) / (1000 * 3600 * 24)
+      let diff = (date.getTime() - new Date(this.date1).getTime()) / (1000 * 3600 * 24)
+      return arr.splice(diff % 5, 1)[0]
     }
   }
 }
