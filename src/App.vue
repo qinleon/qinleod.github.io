@@ -40,6 +40,44 @@ export default {
       let arr = ['zhi', 'bai', 'ye', 'xiu', 'xiu']
       let diff = (date.getTime() - new Date(this.date1).getTime()) / (1000 * 3600 * 24)
       return arr.splice(diff % 5, 1)[0]
+    },
+    doSave(value, type, name) {
+      var blob
+      if (typeof window.Blob == 'function') {
+        blob = new Blob([value], {
+          type: type
+        })
+      } else {
+        var BlobBuilder =
+          window.BlobBuilder || window.MozBlobBuilder || window.WebKitBlobBuilder || window.MSBlobBuilder
+        var bb = new BlobBuilder()
+        bb.append(value)
+        blob = bb.getBlob(type)
+      }
+      var URL = window.URL || window.webkitURL
+      var bloburl = URL.createObjectURL(blob)
+      var anchor = document.createElement('a')
+      if ('download' in anchor) {
+        anchor.style.visibility = 'hidden'
+        anchor.href = bloburl
+        anchor.download = name
+        document.body.appendChild(anchor)
+        var evt = document.createEvent('MouseEvents')
+        evt.initEvent('click', true, true)
+        anchor.dispatchEvent(evt)
+        document.body.removeChild(anchor)
+      } else if (navigator.msSaveBlob) {
+        navigator.msSaveBlob(blob, name)
+      } else {
+        location.href = bloburl
+      }
+    },
+    writeJSON() {
+      var test = {
+        a: [1, 2],
+        b: [3, 4]
+      }
+      this.doSave(JSON.stringify(test), 'text/latex', 'hello.txt')
     }
   }
 }
@@ -70,5 +108,6 @@ export default {
 }
 .current.is-today {
   background: rgb(242, 248, 254);
+  border: 1px solid #409eff;
 }
 </style>
